@@ -7,19 +7,23 @@
  
 Расчёт и визуализация ключевых показателей эффективности (KPI) 
 предприятия. 
- 
+
+## Используемые технологии
+- Python (основной язык программирования)
+- Pandas (библиотека для обработки и анализа данных)
+- Git и GitHub (системы контроля версий)
+
+## Инструкция по запуску
+1. Клонируйте репозиторий: `git clone https://github.com/ravaaaa1/business-metrics-analyzer.git`
+2. Перейдите в папку проекта: `cd business-metrics-analyzer`
+3. Создайте и активируйте виртуальное окружение: `python -m venv .venv`
+4. Установите зависимости: `pip install -r requirements.txt`
+5. Запустите программу: `python main.py`
+
 ## Стек 
  - Python 3.10+ - pandas - matplotlib 
  
-## Запуск 
- 
-python -m venv .venv 
-source .venv/bin/activate  # или .venv\Scripts\activate для 
-Windows 
-pip install -r requirements.txt 
-python main.py 
- 
-Автор
+## Автор
 Студент группы Б1123-38.03.05ба(1), ФИО Ровиснкий Роман Олегович.
 
 ## Планируемые метрики
