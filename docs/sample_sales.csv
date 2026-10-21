@@ -1,0 +1,6 @@
+deal_id,closed_date,department,manager_id,status,amount,cost
+D001,2026-10-01,A,M01,won,10000,7000
+D002,2026-10-02,A,M01,won,8000,5000
+D003,2026-10-03,B,M02,won,12000,9000
+D004,2026-10-04,A,M01,lost,0,0
+D005,,B,M02,open,0,0
