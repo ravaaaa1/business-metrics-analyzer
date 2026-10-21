@@ -16,8 +16,7 @@ rectangle "Business Metrics Analyzer" {
   usecase "UC-07. Настройка целей KPI" as UC07
   usecase "UC-08. Просмотр уведомлений" as UC08
   usecase "UC-09. Сравнение периодов" as UC09
-  usecase "UC-10. Мобильный просмотр KPI
-(вне текущего релиза)" as UC10
+  usecase "UC-10. Мобильный просмотр KPI\n(вне текущего релиза)" as UC10
 }
 CD -- UC01
 MP -- UC01
