@@ -1,0 +1,30 @@
+@startuml
+title C4 L2 - Контейнеры
+left to right direction
+actor "Директор / менеджер / аналитик / администратор" as user
+rectangle "Business Metrics Analyzer" {
+ rectangle "Web UI\n[Container: HTML/JS]\nДашборд и формы" as ui #DDEEFF
+ rectangle "REST API\n[Container: Python/FastAPI]\nAuth/JWT, Users, Import, KPI, Reports, Audit" as api #DDEEFF
+ rectangle "Worker\n[Container: Python, тот же образ]\nИмпорт, отчёты, outbox" as worker #DDEEFF
+ database "PostgreSQL\n[Container: Database]\nСделки, версии, jobs, пользователи, аудит" as db
+ database "Redis\n[Container: Cache]\nПроизводные KPI" as redis
+ storage "S3 / MinIO\n[Container: Object storage]\nВходные файлы, отчёты" as storage
+}
+rectangle "Источники\nCSV; Excel/1С API позже" as source
+rectangle "SMTP-провайдер\nпозже" as smtp
+user --> ui : HTTPS
+ui --> api : HTTPS REST/JSON + JWT
+api --> db : SQL, scope и версия
+api --> redis : KPI cache / RESP
+api --> storage : S3 API, приватные объекты
+worker --> db : SQL, jobs / staging / publish
+worker --> storage : S3 API, чтение/запись
+worker --> redis : Предрасчёт KPI
+source --> ui : Загрузка CSV пользователем
+worker ..> source : HTTPS API (позже)
+worker ..> smtp : SMTP/TLS (позже)
+note bottom of api
+Логические сервисы остаются модулями монолита.
+Задания хранятся в PostgreSQL, Redis не является очередью.
+end note
+@enduml

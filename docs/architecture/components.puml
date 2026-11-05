@@ -1,0 +1,103 @@
+@startuml
+title UML - Компоненты модульного монолита
+skinparam componentStyle uml2
+package Presentation {
+ [AuthController] as ac
+ [SalesController] as sc
+ [KpiController] as kc
+ [ReportsController] as rc
+ [UsersController] as uc
+}
+package Application {
+ [AuthService] as auth
+ [UserService] as users
+ [SalesImportService] as imp
+ [KpiService] as kpi
+ [ReportService] as report
+ [MetricService] as metric
+ [AuditService] as audit
+ interface IUserRepository as ur
+ interface ISaleRepository as sr
+ interface IUnitOfWork as uow
+ interface ITokenProvider as token
+ interface IKpiCache as cache
+ interface IReportGenerator as gen
+ interface IObjectStorage as obj
+ interface INotifier as notify
+ interface IAuditRepository as ar
+ interface IJobRepository as jobs
+}
+package Domain {
+ [Sale / Kpi / User / Report / RevenueTarget] as models
+ [AccessPolicy / Validators] as policy
+ interface IKpiStrategy as strategy
+ [Revenue / AverageCheck / Conversion / Profitability] as formulas
+}
+package Infrastructure {
+ [SqlSaleRepository] as sqls
+ [SqlUserRepository] as sqlu
+ [SqlUnitOfWork] as sqlw
+ [JwtProvider] as jwt
+ [RedisCache] as redis
+ [ReportFactory + Excel/PdfGenerator] as factory
+ [S3Storage] as s3
+ [InAppNotifier / EmailAdapter] as notifier
+ [SqlAuditRepository] as sqla
+ [SqlJobRepository / Worker / Outbox] as worker
+}
+ac --> auth
+uc --> users
+uc --> metric
+sc --> imp
+kc --> kpi
+rc --> report
+auth --> ur
+auth --> token
+users --> ur
+users --> uow
+users --> audit
+imp --> sr
+imp --> uow
+imp --> jobs
+imp --> obj
+imp --> policy
+imp --> audit
+kpi --> sr
+kpi --> strategy
+kpi --> cache
+kpi --> policy
+report --> kpi
+report --> gen
+report --> obj
+report --> jobs
+report --> policy
+metric --> uow
+metric --> models
+audit --> ar
+worker --> imp
+worker --> report
+worker --> notify
+sqls ..|> sr
+sqlu ..|> ur
+sqlw ..|> uow
+jwt ..|> token
+redis ..|> cache
+factory ..|> gen
+s3 ..|> obj
+notifier ..|> notify
+sqla ..|> ar
+worker ..|> jobs
+formulas ..|> strategy
+sqls --> models
+sqlu --> models
+database PostgreSQL as db
+sqls --> db
+sqlu --> db
+sqlw --> db
+sqla --> db
+worker --> db
+note bottom of models
+Domain не зависит от инфраструктуры.
+Composition root внедряет реализации портов.
+end note
+@enduml

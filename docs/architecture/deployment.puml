@@ -1,0 +1,40 @@
+@startuml
+title UML - Облачное развёртывание Docker
+node "Клиентское устройство" {
+ artifact "Браузер / Web UI" as browser
+}
+node "Облачный узел / Docker Engine" {
+ node "Публичный ingress" {
+  node "Nginx container" as nginx
+ }
+ node "Закрытая Docker-сеть" {
+  node "bma-api container\nFastAPI + Uvicorn" as api
+  node "bma-worker container\nТа же версия образа" as worker
+  database "postgres:16\nPersistent volume" as db
+  database "Redis\nВосстанавливаемый cache" as redis
+  storage "MinIO / S3\nPersistent objects" as s3
+ }
+}
+cloud "Внешние системы" {
+ node "SMTP/TLS (позже)" as smtp
+ node "1С API (позже)" as source
+ storage "Резервные копии\nВне узла" as backup
+}
+browser --> nginx : HTTPS 443
+nginx --> api : HTTP 8000, private network
+api --> db : PostgreSQL 5432
+worker --> db : PostgreSQL 5432, jobs + data
+api --> redis : RESP 6379
+worker --> redis : RESP 6379
+api --> s3 : S3 HTTP 9000, private
+worker --> s3 : S3 HTTP 9000, private
+worker ..> smtp : SMTP STARTTLS 587
+worker ..> source : HTTPS 443
+db ..> backup : Зашифрованный backup
+s3 ..> backup : Реплика / backup
+note bottom of nginx
+Наружу публикуется только 443.
+80 допустим только для redirect/ACME.
+TLS и секреты задаются при развёртывании.
+end note
+@enduml
