@@ -1,0 +1,22 @@
+@startuml
+title C4 L1 - Business Metrics Analyzer
+left to right direction
+skinparam componentStyle rectangle
+actor "Коммерческий директор\n[Person]" as director
+actor "Менеджер по продажам\n[Person]" as manager
+actor "Аналитик\n[Person]" as analyst
+actor "Администратор\n[Person]" as admin
+rectangle "Business Metrics Analyzer\n[Software System]\nИмпорт, KPI, дашборд, отчёты, аудит" as bma #DDEEFF
+rectangle "Источник продаж\n[External System]\nCSV сейчас, Excel / 1С API позже" as source
+rectangle "Email-провайдер\n[External System]\nБудущее расширение" as email
+director --> bma : Все отделы, KPI и отчёты
+manager --> bma : KPI и отчёты своего отдела
+analyst --> bma : Импорт CSV, анализ, экспорт
+admin --> bma : Пользователи, роли, цели
+source --> bma : Реестр сделок
+bma ..> email : Уведомления SMTP/TLS (позже)
+note bottom of bma
+Граница MVP: CSV, вход и дашборд.
+Текущие уведомления планируются внутри приложения.
+end note
+@enduml
