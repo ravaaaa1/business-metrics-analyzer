@@ -1,0 +1,71 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor #F5F7FB
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam linetype ortho
+skinparam ArrowColor #465778
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #465778
+hide circle
+left to right direction
+entity "users" as users {
+  * id : INTEGER <<PK>>
+  --
+  * username : VARCHAR(50) <<UQ>>
+  * email : VARCHAR(100) <<UQ>>
+  * password_hash : VARCHAR(255)
+  * role : VARCHAR(20)
+  * created_at : DATETIME
+}
+entity "products" as products {
+  * id : INTEGER <<PK>>
+  --
+  * name : VARCHAR(100)
+  * category : VARCHAR(50)
+  * price : NUMERIC(10, 2)
+    description : TEXT
+}
+entity "sales" as sales {
+  * id : INTEGER <<PK>>
+  --
+  * deal_id : VARCHAR(50) <<UQ>>
+  * sale_date : DATE
+  * department : VARCHAR(30)
+  * status : VARCHAR(10)
+  * revenue : NUMERIC(12, 2)
+  * cost : NUMERIC(12, 2)
+  * orders_count : INTEGER
+  * product_id : INTEGER <<FK>>
+  * manager_id : INTEGER <<FK>>
+}
+entity "metric_settings" as metric_settings {
+  * id : INTEGER <<PK>>
+  --
+  * metric_name : VARCHAR(50) <<UQ>>
+  * formula : TEXT
+  * is_active : BOOLEAN
+}
+entity "kpi" as kpi {
+  * id : INTEGER <<PK>>
+  --
+  * period : VARCHAR(7)
+  * metric_name : VARCHAR(50) <<FK>>
+    value : NUMERIC(18, 4)
+  * calculated_at : DATETIME
+}
+entity "reports" as reports {
+  * id : INTEGER <<PK>>
+  --
+  * report_type : VARCHAR(30)
+  * period : VARCHAR(7)
+  * file_path : VARCHAR(255) <<UQ>>
+  * created_by : INTEGER <<FK>>
+  * created_at : DATETIME
+}
+users ||--o{ sales : manager_id
+products ||--o{ sales : product_id
+users ||--o{ reports : created_by
+metric_settings ||--o{ kpi : metric_name
+@enduml
